@@ -63,7 +63,7 @@
         .chat-container {
             width: 100%;
             max-width: 600px;
-            height: 90vh;
+            height: 80vh;
             background: var(--bg-glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -199,7 +199,6 @@
             position: relative;
         }
 
-        /* Scrollbar personalizado mejorado */
         .chat-messages::-webkit-scrollbar {
             width: 6px;
         }
@@ -603,9 +602,25 @@
       box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
     }
 
+    .start-chat-button2 {
+        background: var(--chat-gradient);
+        color: white;
+        padding: 14px 28px;
+        font-size: 16px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all var(--transition-medium);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        display: block; /* Esto es clave para que margin auto funcione */
+        margin: 0 auto;
+    }
+
+
     .start-chat-button:hover {
       transform: scale(1.05) translateY(-2px);
       box-shadow: 0 10px 30px rgba(79, 70, 229, 0.5);
+
     }
 
     .logo-circle {
