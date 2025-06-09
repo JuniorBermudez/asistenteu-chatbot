@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsistenteU - Soporte Universitario</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="header-content">
+                <div class="bot-avatar">🎓</div>
+                <div class="header-text">
+                    <h2>AsistenteU</h2>
+                    <div class="status">
+                        <div class="status-dot"></div>
+                        En línea
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                <div class="avatar">🤖</div>
+                <div class="content">
+                    ¡Hola! Soy tu AsistenteU, el bot de soporte técnico universitario. Estoy aquí para ayudarte con cualquier consulta. ¿En qué puedo asistirte hoy?
+                    <div class="quick-replies">
+                        <div class="quick-reply" onclick="sendQuickReply('Admisiones')">Admisiones</div>
+                        <div class="quick-reply" onclick="sendQuickReply('Oferta académica')">Oferta Académica</div>
+                        <div class="quick-reply" onclick="sendQuickReply('Calendario académico')">Calendario Académico</div>
+                        <div class="quick-reply" onclick="sendQuickReply('Soporte técnico')">Soporte Técnico</div>
+                        <div class="quick-reply" onclick="sendQuickReply('Bienestar universitario')">Bienestar Universitario</div>
+                        <div class="quick-reply" onclick="sendQuickReply('Matrícula Cero')">Matrícula Cero</div>
+                        <div class="quick-reply" onclick="sendQuickReply('Trámites administrativos')">Trámites Administrativos</div>
+                        <div class="quick-reply" onclick="sendQuickReply('Contacto')">Contacto</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <div class="input-container">
+                <textarea id="user-input" placeholder="Escribe tu consulta aquí..." rows="1"></textarea>
+                <button id="send-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m22 2-7 20-4-9-9-4z"/>
+                        <path d="M22 2 11 13"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        const botResponses = {
+            'saludo': '👋 ¡Hola! ¿En qué puedo ayudarte hoy? Selecciona una de las opciones disponibles abajo:',
+            'despedida': '👋 ¡Hasta luego! Si necesitas más ayuda, aquí estaré 😊',
+            'agradecimiento': '🙏 ¡Con gusto! Si tienes más preguntas, no dudes en escribirme.',
+            'admisiones': '🎓 Información sobre admisiones en UNIPAZ:\n\n• Inscripciones abiertas: Fechas actualizadas en la web\n• Formulario de inscripción disponible en www.unipaz.edu.co (https://www.unipaz.edu.co)\n• Requisitos: Documento de identidad, pruebas Saber 11, etc.\n• Contacto: admisiones@unipaz.edu.co - Ext: 1102',
+            'oferta académica': '📘 Programas ofrecidos por UNIPAZ:\n\n• Ingeniería Agroindustrial\n• Medicina Veterinaria\n• Tecnología en Recursos Naturales\n• Derecho, Administración, y más...\n• Catálogo completo en: www.unipaz.edu.co/oferta-academica (https://www.unipaz.edu.co/oferta-academica)',
+            'calendario académico': '📅 Calendario Académico:\n\n• Inicio semestre A: Enero 29\n• Semana Santa: Marzo 24 - 30\n• Finalización semestre: Junio 14\n• Descárgalo completo en: [www.unipaz.edu.co/calendario](https://www.unipaz.edu.co/calendario)',
+            'campus virtual': '💻 Problemas con el campus virtual:\n\n• Plataforma: virtual.unipaz.edu.co (https://virtual.unipaz.edu.co)\n• Si no puedes acceder: verifica usuario y contraseña institucional\n• Contacto soporte: soportevirtual@unipaz.edu.co\n• Teléfono: (7) 6500000 ext. 2205',
+            'soporte técnico': '🔧 Soporte Técnico UNIPAZ:\n\n• Correo: sistemas@unipaz.edu.co\n• Chat en línea: UNIPAZ en tu Casa (https://unipaz.edu.co/soysoporte.html)\n• Horario de atención: Lunes a Viernes 8:00 am - 12:00 m, 1:30 pm - 4:00 pm',
+            'bienestar universitario': '💚 Bienestar Universitario:\n\n• Servicios: Psicología, deportes, cultura y salud\n• Contacto: bienestar@unipaz.edu.co\n• Oficinas en sede principal (bloque A)\n• Celular: 322 270 36 65',
+            'matricula cero': '💰 Matrícula Cero:\n\n• Beneficio para estudiantes de estratos 1, 2 y 3\n• Aplica para programas de pregrado\n• Más información en: [noticias.unipaz.edu.co](https://noticias.unipaz.edu.co/2021/08/estudiantes-unipaz-de-estratos-1-2-y-3.html)',
+            'trámites administrativos': '📝 Trámites Administrativos:\n\n• Certificados académicos, paz y salvo, entre otros\n• Solicitudes a través de la Oficina de Registro Académico\n• Contacto: registro@unipaz.edu.co\n• Teléfono: (7) 6500000 ext. 2206',
+            'contacto': '📞 Contacto UNIPAZ:\n\n• Dirección: Centro de Investigaciones Santa Lucía, Km 14 vía Bucaramanga\n• PBX: (7) 611 82 10\n• Correo: atencionalciudadano@unipaz.edu.co\n• Horario de atención: Lunes a Jueves 7:00 am - 12:00 m y 1:00 pm - 5:00 pm; Viernes 7:00 am - 12:00 m y 1:00 pm - 4:00 pm',
+            'default': '😕 Lo siento, no logré entender tu mensaje. Por favor, elige una de las opciones disponibles para poder ayudarte mejor:'
+        };
+
+        function matchesAny(message, patterns) {
+            return patterns.some(pattern => new RegExp(pattern, 'i').test(message));
+        }
+
+        function getQuickRepliesHTML() {
+            return `<div class="quick-replies">
+                <div class="quick-reply" onclick="sendQuickReply('Admisiones')">Admisiones</div>
+                <div class="quick-reply" onclick="sendQuickReply('Oferta académica')">Oferta Académica</div>
+                <div class="quick-reply" onclick="sendQuickReply('Calendario académico')">Calendario Académico</div>
+                <div class="quick-reply" onclick="sendQuickReply('Soporte técnico')">Soporte Técnico</div>
+                <div class="quick-reply" onclick="sendQuickReply('Bienestar universitario')">Bienestar Universitario</div>
+                <div class="quick-reply" onclick="sendQuickReply('Matrícula Cero')">Matrícula Cero</div>
+                <div class="quick-reply" onclick="sendQuickReply('Trámites administrativos')">Trámites Administrativos</div>
+                <div class="quick-reply" onclick="sendQuickReply('Contacto')">Contacto</div>
+            </div>`;
+        }
+
+        function getBotResponse(message) {
+            message = message.toLowerCase();
+
+            if (matchesAny(message, ['\\bhola+\\b', 'buen[oa]s', 'buenos días', 'buenas tardes', 'buenas noches', 'hey+', 'ey+', 'holii+', 'holaa+', '👋', 'qué tal', 'saludos'])) {
+                return botResponses['saludo'] + getQuickRepliesHTML();
+            }
+
+            if (matchesAny(message, ['ad[ií]o+s?', 'chao+', 'chau+', 'hasta luego', 'nos vemos', 'me voy', 'bye+', '👋'])) {
+                return botResponses['despedida'];
+            }
+
+            if (matchesAny(message, ['grac[ia]+s+', 'mil gracias', 'te agradezco', 'se agradece', '🙌', '🙏'])) {
+                return botResponses['agradecimiento'];
+            }
+
+            if (message.includes('admisión') || message.includes('admisiones') || message.includes('inscripción') || message.includes('inscripciones')) {
+                return botResponses['admisiones'];
+            } else if (message.includes('programa') || message.includes('oferta')) {
+                return botResponses['oferta académica'];
+            } else if (message.includes('calendario') || message.includes('fechas')) {
+                return botResponses['calendario académico'];
+            } else if (message.includes('campus') || message.includes('virtual') || message.includes('plataforma')) {
+                return botResponses['campus virtual'];
+            } else if (message.includes('soporte') || message.includes('técnico') || message.includes('problema')) {
+                return botResponses['soporte técnico'];
+            } else if (message.includes('bienestar') || message.includes('psicología')) {
+                return botResponses['bienestar universitario'];
+            } else if (message.includes('matrícula cero') || message.includes('beneficio')) {
+                return botResponses['matricula cero'];
+            } else if (message.includes('trámite') || message.includes('certificado')) {
+                return botResponses['trámites administrativos'];
+            } else if (message.includes('contacto') || message.includes('teléfono')) {
+                return botResponses['contacto'];
+            } else {
+                return botResponses['default'] + getQuickRepliesHTML();
+            }
+        }
+
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            userInput.value = '';
+            userInput.style.height = '44px';
+
+            showTypingIndicator();
+
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = getBotResponse(message);
+                addMessage(response, 'bot');
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function addMessage(content, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+
+            if (sender === 'bot') {
+                messageDiv.innerHTML = `<div class="avatar">🤖</div><div class="content">${content.replace(/\n/g, '<br>')}</div>`;
+            } else {
+                messageDiv.innerHTML = `<div class="content">${content}</div>`;
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="avatar">🤖</div>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>`;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) typingIndicator.remove();
+        }
+
+        function sendQuickReply(text) {
+            userInput.value = text;
+            sendMessage();
+        }
+
+        userInput.addEventListener('input', function () {
+            this.style.height = '44px';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+
+        userInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        window.addEventListener('load', () => {
+            userInput.focus();
+        });
+    </script>
+</body>
+</html>
